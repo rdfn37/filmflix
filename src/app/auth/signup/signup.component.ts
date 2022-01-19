@@ -1,5 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { User } from 'src/app/core/models/user';
+
+import { AuthService } from './../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -7,13 +11,33 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./signup.component.scss'],
 })
 export class SignupComponent implements OnInit {
-  @ViewChild('signUp') signUp!: NgForm;
+  @ViewChild('signUp') signUpForm!: NgForm;
 
   onSubmit() {
-    console.log(this.signUp.value);
+    const values = this.signUpForm.value;
+
+    const user: User = {
+      email: values.email,
+      username: values.username,
+      birthdate: values.birthdate,
+      profile: 'assets/use_default.png',
+    };
+
+    this.authService.signUp(values.email, values.password, user).subscribe({
+      next: (creds) => {},
+      error: (err) => {
+        this.snackBar.open(err.code, 'Fechar', {
+          duration: 5000,
+          horizontalPosition: 'end',
+        });
+      },
+    });
   }
 
-  constructor() {}
+  constructor(
+    private authService: AuthService,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {}
 }
