@@ -20,7 +20,7 @@ export class SignupComponent implements OnInit {
       email: values.email,
       username: values.username,
       birthdate: values.birthdate,
-      profile: 'assets/use_default.png',
+      profile: 'assets/user_default.png',
     };
 
     this.authService.signUp(values.email, values.password, user).subscribe({
