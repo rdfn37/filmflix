@@ -3,12 +3,20 @@ import {
   Auth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  User as FirebaseUser,
 } from '@angular/fire/auth';
-import { collection, doc, Firestore, setDoc } from '@angular/fire/firestore';
+import {
+  collection,
+  Firestore,
+  doc,
+  setDoc,
+  getDoc,
+} from '@angular/fire/firestore';
+import { updateProfile } from '@firebase/auth';
+import { updateDoc } from '@firebase/firestore';
 import { user } from 'rxfire/auth';
 import { docData } from 'rxfire/firestore';
-import { delay, from, map, of, switchMap, tap } from 'rxjs';
-
+import { from, map, of, switchMap, tap } from 'rxjs';
 import { User } from '../../models/user';
 
 @Injectable({
@@ -17,19 +25,31 @@ import { User } from '../../models/user';
 export class AuthService {
   constructor(private auth: Auth, private db: Firestore) {}
 
-  login(email: string, password: string) {
-    return from(signInWithEmailAndPassword(this.auth, email, password))
-      .pipe(
-        delay(500)
-      );
+  firebaseUser: FirebaseUser | null = null;
+
+  get logged() {
+    return user(this.auth).pipe(
+      tap((user) => {
+        this.firebaseUser = user;
+      })
+    );
   }
 
-  signUp(email: string, password: string, payload: User) {
+  login(email: string, password: string) {
+    return from(signInWithEmailAndPassword(this.auth, email, password));
+  }
+
+  signup(email: string, password: string, payload: User) {
     return from(
       createUserWithEmailAndPassword(this.auth, email, password)
     ).pipe(
       tap((creds) => {
         payload.uid = creds.user.uid;
+
+        updateProfile(creds.user, {
+          displayName: payload.username,
+          photoURL: payload.profile,
+        });
 
         const users = collection(this.db, 'users');
         const userDoc = doc(users, payload.uid);
@@ -37,10 +57,6 @@ export class AuthService {
         setDoc(userDoc, payload);
       })
     );
-  }
-
-  logout() {
-    this.auth.signOut();
   }
 
   get user() {
@@ -54,9 +70,9 @@ export class AuthService {
     );
   }
 
-  private getUserData(uid: string) {
+  getUserData(uid?: string) {
     const users = collection(this.db, 'users');
-    const userDoc = doc(users, uid);
+    const userDoc = doc(users, uid ? uid : this.firebaseUser?.uid);
 
     return docData(userDoc).pipe(
       map(
@@ -69,6 +85,15 @@ export class AuthService {
     const users = collection(this.db, 'users');
     const userDoc = doc(users, user.uid);
 
-    return from(setDoc(userDoc, user));
+    updateProfile(this.firebaseUser!, {
+      photoURL: user.profile,
+      displayName: user.username,
+    });
+
+    return from(updateDoc(userDoc, user as any));
+  }
+
+  logout() {
+    this.auth.signOut();
   }
 }

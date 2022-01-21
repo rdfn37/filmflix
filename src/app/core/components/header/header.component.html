@@ -1,18 +1,26 @@
 <mat-toolbar>
   <a routerLink="/">
-    <img src="assets/images/logo-minimal.png" alt="Brand" height="28">
+    <img src="assets/logo-minimal.png" alt="Brand" height="28" />
   </a>
   <span class="spacer"></span>
   <div *ngIf="user$ | async as user; else unlogged" class="user-menu">
-    <a routerLink="perfil" class="avatar">
-      <img class="avatar" src="assets/user_default.png" alt="" height="24">
-    </a>
+    <img
+      class="avatar"
+      [src]="user.photoURL"
+      alt="Avatar"
+      routerLink="/perfil"
+      routerLinkActive="avatar-active"
+    />
     <button mat-icon-button (click)="logout()">
       <mat-icon>logout</mat-icon>
     </button>
   </div>
   <ng-template #unlogged>
-    <a mat-button routerLink="login" routerLinkActive="mat-accent">Login</a>
-    <a mat-button routerLink="registro" routerLinkActive="mat-accent">Registro</a>
+    <a mat-button routerLink="/auth/login" routerLinkActive="mat-accent">
+      Login
+    </a>
+    <a mat-button routerLink="/auth/registro" routerLinkActive="mat-accent"
+      >Registro</a
+    >
   </ng-template>
 </mat-toolbar>

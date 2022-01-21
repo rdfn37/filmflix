@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@angular/fire/storage';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytes } from '@firebase/storage';
 import { from, switchMap } from 'rxjs';
 
 @Injectable({
@@ -17,12 +17,13 @@ export class UploadImageService {
   }
 
   upload(image: File, folder: string = 'users/') {
-    const fileName = this.createFileName(image);
-    const profile = ref(this.storage, folder + fileName)
+    const filename = this.createFileName(image);
+    const profile = ref(this.storage, folder + filename);
 
-    return from(uploadBytes(profile, image))
-      .pipe(switchMap((_) => {
-        return from(getDownloadURL(profile))
-      }))
+    return from(uploadBytes(profile, image)).pipe(
+      switchMap((_) => {
+        return from(getDownloadURL(profile));
+      })
+    );
   }
 }

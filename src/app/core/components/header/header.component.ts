@@ -1,25 +1,23 @@
-import { User } from './../../models/user';
-import { AuthService } from './../../services/auth/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { User } from '../../models/user';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
-  user$?: Observable<User | undefined>
+  user$!: Observable<any>;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.user$ = this.authService.user
-    console.log("oi")
+    this.user$ = this.authService.logged;
   }
 
-
   logout() {
-    this.authService.logout()
+    this.authService.logout();
   }
 }

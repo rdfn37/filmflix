@@ -2,8 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { User } from 'src/app/core/models/user';
-
-import { AuthService } from './../../core/services/auth/auth.service';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -11,10 +10,10 @@ import { AuthService } from './../../core/services/auth/auth.service';
   styleUrls: ['./signup.component.scss'],
 })
 export class SignupComponent implements OnInit {
-  @ViewChild('signUp') signUpForm!: NgForm;
+  @ViewChild('signup') signupForm!: NgForm;
 
   onSubmit() {
-    const values = this.signUpForm.value;
+    const values = this.signupForm.value;
 
     const user: User = {
       email: values.email,
@@ -23,7 +22,7 @@ export class SignupComponent implements OnInit {
       profile: 'assets/user_default.png',
     };
 
-    this.authService.signUp(values.email, values.password, user).subscribe({
+    this.authService.signup(values.email, values.password, user).subscribe({
       next: (creds) => {},
       error: (err) => {
         this.snackBar.open(err.code, 'Fechar', {
