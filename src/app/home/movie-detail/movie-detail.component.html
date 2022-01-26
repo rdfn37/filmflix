@@ -1,1 +1,9 @@
-<p>movie-detail works!</p>
+<section *ngIf="detail$ | async as detail" class="section-details">
+  <img class="rounded" src="https://image.tmdb.org/t/p/w300/{{ detail.poster_path }}" alt="{{detail.title}}" />
+  <h1 class="mat-h1">{{detail.title}}</h1>
+  <p class="mat-h2">{{detail.overview}}</p>
+  <mat-chip-list>
+    <mat-chip color="accent" selected>{{detail.vote_average}}</mat-chip>
+  </mat-chip-list>
+  <img class="rounded backdrop" src="https://image.tmdb.org/t/p/original/{{ detail.backdrop_path }}" alt="" />
+</section>

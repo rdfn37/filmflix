@@ -1,3 +1,5 @@
+import { TvDetailComponent } from './tv-detail/tv-detail.component';
+import { MovieDetailComponent } from './movie-detail/movie-detail.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home.component';
@@ -17,6 +19,14 @@ const routes: Routes = [
     component: ProfileComponent,
     ...canActivate(redirectUnauthorizedToLogin),
   },
+  {
+    path: 'movie/:id',
+    component: MovieDetailComponent
+  },
+  {
+    path: 'tv/:id',
+    component: TvDetailComponent
+  }
 ];
 
 @NgModule({
